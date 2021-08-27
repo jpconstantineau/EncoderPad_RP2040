@@ -1,3 +1,4 @@
+# SPDX-FileCopyrightText: 2021 Pierre Constantineau
 # SPDX-License-Identifier: MIT
 
 # This code is currently a work in progress for the prototype hardware
@@ -13,58 +14,95 @@ import keypad
 import usb_hid
 import pwmio
 from adafruit_hid.keyboard import Keyboard
-from KC import Keycode as KC
-import lights
+from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
+from pykey.keycode import PK_Keycode as KC
+import pykey.lights as lights
 
-
-# define audio hardware
-buzzer = pwmio.PWMOut(board.P0_29, variable_frequency=True)
-buzzer.frequency = 440
-OFF = 0
-ON = 2**15
-not_sleeping = True
-
-# define LEDs
-leds = lights.LEDMatrix((board.P0_08,board.P0_02,board.P0_03),(board.P0_24,board.P0_20,board.P0_10),True)
-leds.reset_leds()
-
-# define key matrix
+################################################################
+# init board's User Input (keys, buttons, encoders)
+# replace with your own pins and stuff
+################################################################
+# -------------------------------------------
+# Hardware definition: Switch Matrix Setup.
+# -------------------------------------------
 keys = keypad.KeyMatrix(
     row_pins=(board.P0_06, board.P1_13, board.P0_28),
     column_pins=(board.P0_09, board.P0_13,board.P1_06),
     columns_to_anodes=False,
 )
 
+# -------------------------------------------
+# Hardware definition: Key Switch Setup.
+# -------------------------------------------
+buttons = None
 
-# define rotary encoder
-encoder = rotaryio.IncrementalEncoder(board.P0_30, board.P0_26)
-last_position = 0
+# -------------------------------------------
+# Hardware definition: rotary encoder
+# -------------------------------------------
+encoder = rotaryio.IncrementalEncoder(board.P0_26, board.P0_30)
 
-# setup variables
+
+################################################################
+# init board's LEDs for visual output
+# replace with your own pins and stuff
+################################################################
+# -------------------------------------------
+# Hardware definition: GPIO where Neopixel (RGB LED) is connected.
+# -------------------------------------------
+pixel_pin = None
+num_pixels = 0
+
+# -------------------------------------------
+# Hardware definition: LED Matrix
+# -------------------------------------------
+leds = lights.LEDMatrix((board.P0_08,board.P0_02,board.P0_03),(board.P0_24,board.P0_20,board.P0_10),True)
+leds.reset_leds()
+
+
+# -------------------------------------------
+# Hardware definition: audio hardware
+# -------------------------------------------
+buzzer = pwmio.PWMOut(board.P0_29, variable_frequency=True)
+buzzer.frequency = 440
+OFF = 0
+ON = 2**15
+not_sleeping = True
+
+
+################################################################
+# Initialize common variables
+# No need to replace things
+################################################################
 keyboard = Keyboard(usb_hid.devices)
-#keyboard_layout = KeyboardLayoutUS(keyboard)
-
-
+keyboard_layout = KeyboardLayoutUS(keyboard)
+last_position = 0
 layer = 0
+
+
+
 keymap = ((KC.A,KC.B,KC.C,KC.D,KC.E,KC.F,KC.G,KC.H,KC.I),
         (KC.A,KC.B,KC.C,KC.D,KC.E,KC.F,KC.G,KC.H,KC.I))
 
 
-encoder_map = ((KC.DOWN,KC.UP),
+encoder_map = ((KC.LEFT,KC.RIGHT),
                 (KC.LEFT, KC.RIGHT))
 
-
-# End of Setup Music
+################################################################
+# DONE SETTING UP 
+################################################################
+# End of Setup: Lets play some Music to let the user we are ready
 buzzer.duty_cycle = ON
 buzzer.frequency = 440
 time.sleep(0.05)
 buzzer.frequency = 880
 time.sleep(0.05)
-buzzer.frequency = 440
+buzzer.frequency = 1660
 time.sleep(0.05)
 buzzer.duty_cycle = OFF
 
-
+################################################################
+# loop-y-loop
+################################################################
 while not_sleeping:
     key_event = keys.events.get()
     if key_event:
@@ -84,5 +122,12 @@ while not_sleeping:
             keyboard.send(encoder_map[layer][1])
     last_position = position
     time.sleep(0.002)
-time_alarm = alarm.time.TimeAlarm(monotonic_time=time.monotonic() + 60)
-alarm.exit_and_deep_sleep_until_alarms(time_alarm)
+# if we end up here, the program will end with a short tune...
+buzzer.duty_cycle = ON
+buzzer.frequency = 1660
+time.sleep(0.05)
+buzzer.frequency = 880
+time.sleep(0.05)
+buzzer.frequency = 440
+time.sleep(0.05)
+buzzer.duty_cycle = OFF
