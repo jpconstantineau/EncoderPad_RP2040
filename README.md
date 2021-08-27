@@ -23,7 +23,8 @@ The Encoder Pad can be programmed with CircuitPython.  To get started, get the l
 
 Notes: 
 * CircuitPython is licensed under the [MIT License](https://github.com/adafruit/circuitpython/blob/main/LICENSE).
-* Default Firmware for the EncoderPad will be based on the [MACROPAD Hoykeys](https://learn.adafruit.com/macropad-hotkeys) example for the [Adafruit Macropad RP2040](https://learn.adafruit.com/adafruit-macropad-rp2040) which is part of the [Adafruit Learning System Guides](https://learn.adafruit.com/), licensed under the [MIT License](https://github.com/adafruit/Adafruit_Learning_System_Guides/blob/main/LICENSE).
+* Default Firmware for the EncoderPad is based on the [MACROPAD Hoykeys](https://learn.adafruit.com/macropad-hotkeys) example for the [Adafruit Macropad RP2040](https://learn.adafruit.com/adafruit-macropad-rp2040) which is part of the [Adafruit Learning System Guides](https://learn.adafruit.com/), licensed under the [MIT License](https://github.com/adafruit/Adafruit_Learning_System_Guides/blob/main/LICENSE).
+* Default firmware is **MIT** licensed.
 
 ### Hardware License
 
